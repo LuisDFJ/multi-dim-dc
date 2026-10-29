@@ -1,0 +1,10 @@
+[package]
+name = "nD-dc"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+lattice_macros = { path = "lattice_macros" }
+
+[workspace]
+members = ["lattice_macros"]
