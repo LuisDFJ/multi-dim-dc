@@ -23,8 +23,6 @@ pub struct Cell {
     face : Set,
 }
 
-
-
 #[cfg(test)]
 mod test {
     use super::*;
@@ -32,15 +30,12 @@ mod test {
     fn test_combinatorics() {
         let l = Lattice::new(3);
         for s in l.k_combinations(3) {
-            for c in l.sub_cells(1, &s) {
-                println!("{:?}", c)
+            for c in l.sub_cells(2, &s) {
+                println!("{}", c.tokenize())
             }
             println!();
         }
 
         //l.sub_cells(m, s)
-        assert!(false)
-
-
     }
 }
