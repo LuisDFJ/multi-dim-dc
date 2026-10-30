@@ -1,22 +1,39 @@
-use crate::combinatorics::utils::gray_encode;
+use crate::combinatorics::utils::{gray_encode,binom};
 
 use super::*;
 
 impl Lattice {
     pub fn new( n : u8 ) -> Self {
-        Self{ n, u : (0..n).collect() }
+        Self{ n, u : Set((0..n).collect()) }
+    }
+
+    pub fn adj_size( n : u8 , k : u8, m : u8 ) -> usize {
+        if k > m {
+            ( 2u64.pow((k-m) as u32) * binom(k, m) ) as usize
+        } else {
+            ( 2u64.pow((m-k) as u32) * binom(n-k, m-k) ) as usize
+        }
+    }
+
+    pub fn adj_cells( &self, m : u8, s : &Set ) -> Vec<Cell> {
+        if s.len() > m as usize {
+            self.sub_cells(m, s)
+        } else {
+            self.sup_cells(m, s)
+        }
     }
 
     /// Generate all incident m-cells for a k-cell's S-face
     /// here: m < k
     /// and |S| = k
-    pub fn sub_cells( &self, m : u8, s : &Set ) -> Vec<Cell> {
+    fn sub_cells( &self, m : u8, s : &Set ) -> Vec<Cell> {
+        let k = s.len() as u8;
         let mut cells = Vec::new();
         for m_face in self.m_subset(m, s) {
             let offset = difference(s, &m_face);
             let mut cell : Vec<Cell> = gray_encode(offset.len() as u8)
                 .iter().map(|mask| {
-                Cell::new( self.n, m, mask, &offset, &m_face)
+                Cell::new( self.n, k, m, mask, &offset, &m_face)
             }).collect();
             cells.append(&mut cell);
         }
@@ -26,13 +43,14 @@ impl Lattice {
     /// Generate all adjacent m-cells for a k-cell's S-face
     /// here: k < m
     /// and |S| = k
-    pub fn sup_cells( &self, m : u8, s : &Set ) -> Vec<Cell> {
+    fn sup_cells( &self, m : u8, s : &Set ) -> Vec<Cell> {
+        let k = s.len() as u8;
         let mut cells = Vec::new();
         for m_face in self.m_supset(m, s) {
             let offset = difference(&m_face, s);
             let mut cell : Vec<Cell> = gray_encode(offset.len() as u8)
                 .iter().map(|mask| {
-                Cell::new( self.n, m, mask, &offset, &m_face)
+                Cell::new( self.n, k, m, mask, &offset, &m_face)
             }).collect();
             cells.append(&mut cell);
         }

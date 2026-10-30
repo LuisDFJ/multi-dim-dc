@@ -1,36 +1,36 @@
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
+use quote::quote;
+use crate::utils;
 
 use super::*;
 
 impl Cell {
-    pub fn new( n: u8, k: u8, eps: &Mask, s_x: &Set, x: &Set ) -> Self {
-        Self { n, k, mask:eps.clone(), offset:s_x.clone(), face:x.clone() }
+    pub fn new( n: u8, k: u8, m: u8, eps: &Mask, s_x: &Set, x: &Set ) -> Self {
+        Self { n, k, m, mask:eps.clone(), offset:s_x.clone(), face:x.clone() }
     }
-    pub fn tokenize(&self) -> TokenStream {
-        let tag = format_ident!("C{}", self.k);
-        let mut args : Vec<TokenStream> = (0..self.n).into_iter().map(|i| {
-            let arg = format_ident!("u");
-            let n = i as usize;
-            quote! {self.#arg[#n]}
-        }).collect();
-        for (i,m) in self.mask.iter().enumerate() {
-            if *m {
+    pub fn tokenize(self) -> TokenStream {
+        let tag = utils::c(self.k);
+        let mut params = utils::params_idx("u", self.n);
+        for (i,flag) in self.mask.into_iter().enumerate() {
+            if flag {
                 let offset = self.offset[i] as usize;
-                let u = args[offset].clone();
-                args[offset] = quote!{ #u + 1 }
+                let u = params[offset].clone();
+                //params[offset] = quote!{ #u + 1 }
+                if self.k < self.m {
+                    params[offset] = quote!{ #u - 1 }
+                } else {
+                    params[offset] = quote!{ #u + 1 }
+                }
             }
         }
-        if self.face.len() > 0 {
-            let id = self.face.iter()
-                .map(|i| i.to_string())
-                .collect::<Vec<String>>()
-                .join("");
-            let face = format_ident!("E{}", id);
-            args.push(quote! { #face });
+        let mut params = quote! { #(self.#params),* };
+        if self.face.len() > 0 && self.face.len() < self.n as usize {
+            params.extend(self.face.tokenize(true));
         }
         quote! {
-            #tag::new(#(#args),*)
+            #tag::new(#params)
         }
     }
 }
+
+
