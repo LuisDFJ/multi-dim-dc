@@ -17,7 +17,6 @@ pub fn define_types( input : TokenStream ) -> TokenStream {
     out.extend(types::gen_e_enums(n));
     out.extend(types::gen_c_types(n));
     out.extend(cubic_lattice::gen_lattice_types(n));
-    out.extend(cubic_lattice::gen_lattice_impls(n));
     out.into()
 }
 
@@ -29,6 +28,7 @@ pub fn implement_cells( input : TokenStream ) -> TokenStream {
     let mut out = proc_macro2::TokenStream::new();
     for k in 0..=n {
         out.extend(impl_cells::impl_c_k(n, k));
+        out.extend(cubic_lattice::impl_lattice_k(n, k));
     }
     out.into()
 }

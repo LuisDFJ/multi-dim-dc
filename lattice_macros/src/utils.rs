@@ -8,7 +8,7 @@ fn tag<T: IdentFragment>(id: &str, i: T) -> TokenStream {
 
 fn tag_idx(id: &str, i: usize) -> TokenStream {
     let tag = format_ident!("{}", id);
-    quote! {#tag[#i]}
+    quote! {#tag.0[#i]}
 }
 
 pub fn lattice(k:u8) -> TokenStream {tag("LatticeC", k)}

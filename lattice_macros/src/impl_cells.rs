@@ -24,10 +24,11 @@ fn gen_fn_get( n: u8, k: u8 ) -> Vec<TokenStream> {
 
 fn gen_fn_k_m( n: u8, k: u8, m: u8 ) -> TokenStream {
     let tag = utils::get_c(m);
+    let ctag = utils::c(m);
     let l = Lattice::adj_size(n, k, m);
     let impl_match = gen_match(n, k, m);
     quote! {
-        pub fn #tag( &self ) -> [Self;#l] {
+        pub fn #tag( &self ) -> [#ctag;#l] {
             #impl_match
         }
     }
@@ -35,7 +36,7 @@ fn gen_fn_k_m( n: u8, k: u8, m: u8 ) -> TokenStream {
 
 type Case = (Option<TokenStream>, Vec<TokenStream>);
 fn gen_match( n: u8, k: u8, m: u8 ) -> TokenStream {
-    let cases : Vec<TokenStream> = gen_cases_k_m(n, k, m)
+    let cases : Vec<_> = gen_cases_k_m(n, k, m)
         .into_iter()
         .map(|c| parse_case(c))
         .collect();

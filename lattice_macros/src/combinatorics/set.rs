@@ -1,5 +1,5 @@
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
+use quote::quote;
 
 use crate::utils;
 
@@ -16,7 +16,9 @@ impl Set {
     pub fn contains(&self, v : &u8) -> bool { self.0.contains(v) }
 
     pub fn tokenize(&self, complete: bool) -> TokenStream {
-        let id = self.0.iter()
+        let mut v = self.0.clone();
+        v.sort();
+        let id = v.into_iter()
             .map(|i| i.to_string())
             .collect::<Vec<String>>()
             .join("");
