@@ -1,9 +1,9 @@
 use proc_macro2::TokenStream;
-use quote::{format_ident, quote};
+use quote::quote;
 use crate::utils;
 
 pub fn gen_lattice(n : u8, k : u8) -> TokenStream {
-    let tag = format_ident!("LatticeC{}", k);
+    let tag = utils::lattice(k);
     let ntag = utils::n(n);
     if k > 0 && k < n {
         let p : Vec<TokenStream> = (0..n).into_iter().map(|_| quote! {u32}).collect();

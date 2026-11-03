@@ -17,6 +17,7 @@ pub fn define_types( input : TokenStream ) -> TokenStream {
     out.extend(types::gen_e_enums(n));
     out.extend(types::gen_c_types(n));
     out.extend(cubic_lattice::gen_lattice_types(n));
+    out.extend(cubic_lattice::gen_lattice_impls(n));
     out.into()
 }
 

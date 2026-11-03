@@ -11,6 +11,8 @@ fn tag_idx(id: &str, i: usize) -> TokenStream {
     quote! {#tag[#i]}
 }
 
+pub fn lattice(k:u8) -> TokenStream {tag("LatticeC", k)}
+
 pub fn u(n:u8) -> TokenStream { tag("U", n) }
 
 pub fn n(n:u8) -> TokenStream { tag("N", n) }
@@ -23,10 +25,21 @@ pub fn i(id: &String) -> TokenStream { tag("I", id) }
 
 pub fn get_c(m:u8) -> TokenStream { tag("get_c", m) }
 
+
 pub fn params( id: &str, n: u8 ) -> Vec<TokenStream> {
     (0..n).into_iter().map( |i| tag(&id, i) ).collect()
 }
 
 pub fn params_idx( id: &str, n: u8 ) -> Vec<TokenStream> {
     (0..n).into_iter().map( |i| tag_idx(&id, i as usize) ).collect()
+}
+
+pub fn join_op<F>( tokens : Vec<TokenStream>, op : F ) -> TokenStream
+where F : Fn(TokenStream,TokenStream) -> TokenStream
+{
+    let mut iter = tokens.into_iter();
+    match iter.next() {
+        Some(first) => iter.fold(quote! {#first}, op),
+        None => quote! {},
+    }
 }

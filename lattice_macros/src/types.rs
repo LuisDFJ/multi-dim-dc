@@ -3,8 +3,8 @@ use quote::quote;
 use crate::utils;
 
 fn derives() -> TokenStream {
-    //quote! { #[derive(Debug,Clone,Copy,PartialEq,Eq,Hash)] }
-    quote! {}
+    quote! { #[derive(Debug,Clone,Copy,PartialEq,Eq,Hash)] }
+    //quote! {}
 }
 
 pub fn gen_u_n_types( n: u8 ) -> TokenStream {
