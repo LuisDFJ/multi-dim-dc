@@ -1,5 +1,6 @@
 mod utils;
 mod types;
+mod embed;
 mod cubic_lattice;
 mod combinatorics;
 mod impl_cells;
@@ -16,7 +17,10 @@ pub fn define_types( input : TokenStream ) -> TokenStream {
     out.extend(types::gen_u_n_types(n));
     out.extend(types::gen_e_enums(n));
     out.extend(types::gen_c_types(n));
+    out.extend(types::gen_d_p_types(n));
     out.extend(cubic_lattice::gen_lattice_types(n));
+    out.extend(embed::gen_embeded_traits(n));
+    out.extend(embed::gen_space(n));
     out.into()
 }
 
@@ -29,6 +33,7 @@ pub fn implement_cells( input : TokenStream ) -> TokenStream {
     for k in 0..=n {
         out.extend(impl_cells::impl_c_k(n, k));
         out.extend(cubic_lattice::impl_lattice_k(n, k));
+        out.extend(embed::impl_embeded_k(n, k));
     }
     out.into()
 }

@@ -1,6 +1,15 @@
 use proc_macro2::TokenStream;
 use quote::{IdentFragment, format_ident, quote};
 
+pub fn derives() -> TokenStream {
+    quote! { #[derive(Debug,Clone,Copy,PartialEq,Eq,Hash)] }
+    //quote! {}
+}
+
+pub fn derives_float() -> TokenStream {
+    quote! { #[derive(Debug,Clone,Copy)] }
+}
+
 fn tag<T: IdentFragment>(id: &str, i: T) -> TokenStream {
     let tag = format_ident!("{}{}", id, i);
     quote! {#tag}
@@ -17,7 +26,13 @@ pub fn u(n:u8) -> TokenStream { tag("U", n) }
 
 pub fn n(n:u8) -> TokenStream { tag("N", n) }
 
+pub fn d(n:u8) -> TokenStream { tag("D", n) }
+
+pub fn p(n:u8) -> TokenStream { tag("P", n) }
+
 pub fn c(k:u8) -> TokenStream { tag("C", k) }
+
+pub fn s(k:u8) -> TokenStream { tag("S", k) }
 
 pub fn e(k:u8) -> TokenStream { tag("E", k) }
 

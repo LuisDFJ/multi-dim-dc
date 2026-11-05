@@ -4,9 +4,6 @@ mod cell;
 mod set;
 
 use self::utils::*;
-use self::lattice::*;
-use self::cell::*;
-use self::set::*;
 
 type Mask = Vec<bool>;
 
